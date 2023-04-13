@@ -197,27 +197,27 @@ router.put('/update/:id', async (req, res) => {
 
 router.post('/apply/:internship_ID', async (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
-
+const Internshiptitle = req.body.title
   try {
     // get user id from token
     const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
     const userId = decodedToken._id;
-    console.log("////userId////", userId)
+    const userName = decodedToken.nameFL
 
     // get internship id from request body
     const internshipId = req.params.internship_ID;
-    console.log("////internshipId////", internshipId)
     const emailExist = await InternshipApplication.findOne({
       candidate_ID:userId,
-      internship_ID: internshipId  
-    });
-    console.log("/////test1000100///////",emailExist)
+      internship_ID: internshipId 
+       });
     if (emailExist) return res.status(400).send('Email already exist !! ')
   
     // create new internship application
     const application = new InternshipApplication({
       internship_ID: internshipId,
+      title:Internshiptitle,
       candidate_ID: userId,
+      candidate_name:userName,
       status: "submitted"
     });
 

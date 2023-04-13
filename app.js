@@ -28,12 +28,15 @@ const InternshipCrud = require('./routes/InternshipCrud');
 const CandidateCrud = require('./routes/CandidateCrud');
 const auth = require('./routes/auth');
 
+const appstat = require('./routes/appStatus');
 
 
 app.use('/crudapi/', UserCrud);
 app.use('/crudapi/internship/', InternshipCrud);
 app.use('/crudapi/candidate/', CandidateCrud);
 app.use('/crudapi/auth/', auth);
+app.use('/crudapi/appstatus/', appstat);
+
 
 
 // port
