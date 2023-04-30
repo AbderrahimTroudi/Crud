@@ -22,7 +22,7 @@ router.get('/getbyid/:id', async (req, res) => {
       res.send(user);
   
     } catch (err) {
-      res.send('Error ' + err);
+      res.send('eas ' + err);
     }
   });
 

@@ -10,6 +10,9 @@ const registration = (data) =>{
         max_candidates:Joi.number().min(1).max(5).required(),
         spots_available:Joi.number().max(5).required(),
         status:Joi.string().min(3).max(30).valid('open','closed').required(),
+        category:Joi.string().max(30).required(),
+        suprivisorid:Joi.string().required()
+
     })
 return schema.validate(data)
 

@@ -2,6 +2,7 @@ const router = require('express').Router();
 const Internship = require ('../model/Internship');
 const {registration} = require('../validation/InternshipValidation');
 const moment = require("moment");
+const suprivisor =require('../model/suprivisor')
 
 //search bar 
 router.get('/search', async (req, res) => {
@@ -21,8 +22,6 @@ router.get('/search', async (req, res) => {
     }
   });
 
-
-
  /* router.get('/searchs', (req, res) => {
     const searchTerm = req.query.q;
     Internship.find({ $text: { $search: searchTerm } }, { score: { $meta: "textScore" } })
@@ -36,8 +35,6 @@ router.get('/search', async (req, res) => {
         res.send('Error ' + err);
       });});*/
   
-
-
 // get all 
 router.get('/getall', async(req,res) => {
     try{
@@ -68,7 +65,7 @@ router.post('/register', async(req,res) => {
     const InternshipExist = await Internship.findOne({title:req.body.title});
     if(InternshipExist) return res.status(400).send('Internship already exist !! ')
 
-const user = new Internship({
+const internship = new Internship({
     title:req.body.title,
     description:req.body.description,
     requirements:req.body.requirements,
@@ -78,6 +75,8 @@ const user = new Internship({
     max_candidates:req.body.max_candidates,
     spots_available:req.body.spots_available,
     status:req.body.status,
+    category:req.body.category,
+    suprivisorid:req.body.suprivisorid,
     created_at:new Date(),
     updated_at:new Date(),
 
@@ -85,11 +84,20 @@ const user = new Internship({
 });
 
 try {
-    const savedInternship = await user.save();
-    res.send(savedInternship);
+    const savedInternship = await internship.save();
+
+     const user = await suprivisor.findById(req.body.suprivisorid);
+   
+     user.listofinternship.push([savedInternship.title, savedInternship._id]);
+     
+      const savedUser = await user.save();
+    res.send(savedUser);
 } catch (error) {
     res.status(400).send(error);
 }
+
+//adding the internship to the list of interships of the supervisor
+
 });
 ///delete part ////
 router.delete('/delete/:id', async(req,res) => {

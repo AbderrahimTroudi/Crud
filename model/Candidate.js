@@ -28,10 +28,11 @@ const condidate = new mongoose.Schema({
         type:String,
         required : false
     },
-    role:{
-        type:String,
-        required : false
-    },
+    role: {
+        type: String,
+        default: 'user',
+      },
+
 
     name:{
         type : String
@@ -41,6 +42,13 @@ const condidate = new mongoose.Schema({
     },
     contentType:{
         type : String
+    },
+    progressList:{
+        type : Array
+    },
+    created_date: {
+        type: Date,
+        default: Date.now
     }
 
 })

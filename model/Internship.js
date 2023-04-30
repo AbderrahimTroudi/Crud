@@ -37,7 +37,18 @@ const internshipSchema = new mongoose.Schema({
     status:{
         type:String,
         required : true
-    }})
+    },
+    category:{
+        type:String,
+        required : true
+    },
+    suprivisorid:{
+        type:String,
+        required : true
+    }
+
+
+})
     const Internship = mongoose.model('Internship', internshipSchema);
 
 module.exports = Internship

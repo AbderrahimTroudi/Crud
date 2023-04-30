@@ -51,8 +51,8 @@ router.get('/getall', async (req, res) => {
 
 router.get('/getdetails/:id', async (req, res) => {
   try {
-    const user = await Condidate.findById(req.params.id).select('-name -data -contentType');
 
+    const user = await Condidate.findById(req.params.id).select('-name -data -contentType');
     res.send(user);
 
   } catch (err) {
@@ -152,52 +152,10 @@ router.put('/update/:id', async (req, res) => {
   }
 })
 
-
-
-// create endpoint for applying for an internship
-/*router.post('/apply', async (req, res) => {
-  console.log("test1")
-
-  console.log("//headers//",req.headers.authorization)
-  const token = req.headers.authorization.split(' ')[1];
-  console.log("//token//",token)
-  console.log("testé")
-
-  /*try {
-    // get user id from token
-    const token = req.cookies.access_token;
-    console.log("//token//",token)
-    const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
-    const userId = decodedToken._id;
-    console.log("////userId////", userId)
-    // get internship id from request body
-    const internshipId = req.params.internship_ID;
-    console.log("////internshipId////", internshipId)
-
-    // create new internship application
-    const application = new InternshipApplication({
-      internship_ID: internshipId,
-      candidate_ID: userId,
-      status: "submitted"
-    });
-    console.log(application.Status)
-    // save the application to the database
-    const savedApplication = await application.save();
-
-    // send a response indicating success
-    res.status(200).json({
-      message: 'Application submitted successfully',
-      application: savedApplication
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).send(error)
-  }
-});*/
-
 router.post('/apply/:internship_ID', async (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
-const Internshiptitle = req.body.title
+const Internshiptitle = req.body.title;
+console.log("Internshiptitle",Internshiptitle)
   try {
     // get user id from token
     const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
@@ -236,11 +194,48 @@ const Internshiptitle = req.body.title
 });
 
 
-router.get('/check1', async (req, res) => {
-res.send(console.log("tneket"))
+router.get('/getallapplication', async (req, res) => {
+  try {
+    const user = await InternshipApplication.find().select('-name -data -contentType')
+    res.json(user)
+  } catch (err) {
+    res.send('Error ' + err)
+  }});
+
+
+////////////////////////////////get a progress////////////////////////////////
+
+  router.get('/getprogress/:id', async (req, res) => {
+    try {
+      const user = await Condidate.findById(req.params.id).select('progressList')
+      res.json(user)
+    } catch (err) {
+      res.send('Error ' + err)
+    }});
+
+//////////////////////////////////add a progress////////////////////////////////
+router.post('/addprogress/:id', async (req, res) => {
+  const { title, description } = req.body; // extract title and description from request body
+  if (!title || !description) {
+    return res.status(400).send('Enter title and description'); // return error if title or description is missing
+  }
+
+  const newProgress = {
+    dateAdd: new Date(), // add current date
+    title,
+    description,
+    comment:''
+  };
+
+  try {
+    const user = await Condidate.findById(req.params.id).select('-name -data -contentType');
+    user.progressList.push(newProgress);
+    user.save();
+    res.send("Progress Added");
+  } catch (err) {
+    res.send('Error ' + err);
+  }
 });
-
-
 
 
 module.exports = router;

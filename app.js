@@ -29,6 +29,9 @@ const CandidateCrud = require('./routes/CandidateCrud');
 const auth = require('./routes/auth');
 
 const appstat = require('./routes/appStatus');
+const application = require('./routes/internshipApplications');
+
+const sup = require('./routes/suprivisorCrud');
 
 
 app.use('/crudapi/', UserCrud);
@@ -36,6 +39,9 @@ app.use('/crudapi/internship/', InternshipCrud);
 app.use('/crudapi/candidate/', CandidateCrud);
 app.use('/crudapi/auth/', auth);
 app.use('/crudapi/appstatus/', appstat);
+app.use('/crudapi/application/', application);
+app.use('/crudapi/suprivisor/', sup);
+
 
 
 
