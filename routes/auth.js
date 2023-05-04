@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const Candidate = require('../model/Candidate');
+const Mentor = require('../model/suprivisor');
+
 const {
     loginvalidation
 } = require('../validation/authValidation');
@@ -12,7 +14,7 @@ const cookieParser = require('cookie-parser');
 ////////////       LOG IN PART //////////////
 
 
-
+//user login
 router.post('/login', async (req, res) => {
     const {
         error
@@ -31,7 +33,7 @@ router.post('/login', async (req, res) => {
     //Create the TOKEN
     const token = jwt.sign({
         _id: user._id,
-        nameFL: user.nameFL,
+        name: user.name,
         role:user.role
     }, process.env.TOKEN_SECRET);
   
@@ -39,6 +41,32 @@ router.post('/login', async (req, res) => {
  res.json(token);
  
 })
+
+//Mentor Login
+router.post('/loginadmin', async (req, res) => {
+   
+    const user = await Mentor.findOne({
+        email: req.body.email,
+       
+    });
+    if (!user) return res.status(400).send('Email DOES NOT exist !! ')
+
+    const PasswordExist = await bcrypt.compare(req.body.password, user.password);
+    if (!PasswordExist) return res.status(400).send('check your PASSWORD')
+
+
+    //Create the TOKEN
+    const token = jwt.sign({
+        _id: user._id,
+        name: user.name,
+        role:user.role
+    }, process.env.TOKEN_SECRET);
+  
+ //Create the TOKEN
+ res.json(token);
+ 
+})
+
 
 const clearTokenCookie = (res) => {
     res.clearCookie('token');
@@ -58,12 +86,12 @@ router.get('/user', async (req, res) => {
 
     try {
         const verified = jwt.verify(token, process.env.TOKEN_SECRET);
-console.log(verified.nameFL)
+console.log(verified.name)
 console.log(verified._id)
 
         const user = await Candidate.findById(verified._id);
        
-        res.send(user.nameFL);
+        res.send(user.name);
     } catch (err) {
         res.status(400).send('Invalid Token');
     }

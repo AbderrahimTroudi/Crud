@@ -7,6 +7,17 @@ const {
 
 const bcrypt = require('bcryptjs');
 
+//add a comment to a specific candidate
+
+router.get('/addcomment/:id', async (req, res) => {
+    try {
+        const user = await suprivisor.findById(req.params.id)
+        res.json(user)
+    } catch (err) {
+        res.send('Error ' + err)
+    }
+})
+
 
 //search bar 
 router.get('/search', async (req, res) => {

@@ -22,7 +22,16 @@ const InternshipApplication = new mongoose.Schema({
         type: String,
         enum: ['submitted', 'accepted', 'rejected'],
         default: 'submitted'
-      }
+      },
+      date: {
+        type: Date,
+        default: Date.now
+    },
+    updated_at: {
+        type: Date,
+        default: Date.now
+    }
+
 })
 const internshipApplication = mongoose.model('InternshipApplication', InternshipApplication);
 

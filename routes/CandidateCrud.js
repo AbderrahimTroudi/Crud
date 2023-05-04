@@ -38,7 +38,14 @@ router.get('/search', async (req, res) => {
 });
 
 // get all 
-
+router.get('/getinterns', async (req, res) => {
+  try {
+    const user = await Condidate.find({role:'intern'}).select('-name -data -contentType');
+    res.json(user)
+  } catch (err) {
+    res.send('Error ' + err)
+  }
+})
 router.get('/getall', async (req, res) => {
   try {
     const user = await Condidate.find().select('-name -data -contentType')
@@ -176,7 +183,8 @@ console.log("Internshiptitle",Internshiptitle)
       title:Internshiptitle,
       candidate_ID: userId,
       candidate_name:userName,
-      status: "submitted"
+      status: "submitted",
+ 
     });
 
     // save the application to the database
