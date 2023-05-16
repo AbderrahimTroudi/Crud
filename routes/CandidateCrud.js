@@ -149,10 +149,13 @@ router.delete('/delete/:id', async (req, res) => {
 // update part ///
 
 router.put('/update/:id', async (req, res) => {
+
+
   try {
     const user = await Condidate.findByIdAndUpdate(req.params.id, req.body, {
       new: true
     });
+    
     res.json(user)
   } catch (err) {
     res.send('Error' + err)

@@ -32,6 +32,11 @@ const appstat = require('./routes/appStatus');
 const application = require('./routes/internshipApplications');
 
 const sup = require('./routes/suprivisorCrud');
+const meetrequest = require('./routes/MeetrequestCrud');
+
+
+const supervisorarchive = require('./routes/SupervisorArchiveCrud');
+const internarchive = require('./routes/InternArchiveCrud');
 
 
 app.use('/crudapi/', UserCrud);
@@ -41,6 +46,9 @@ app.use('/crudapi/auth/', auth);
 app.use('/crudapi/appstatus/', appstat);
 app.use('/crudapi/application/', application);
 app.use('/crudapi/suprivisor/', sup);
+app.use('/crudapi/meetrequest/', meetrequest);
+app.use('/crudapi/supervisorarchive/', supervisorarchive);
+app.use('/crudapi/internarchive/', internarchive);
 
 
 

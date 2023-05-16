@@ -28,6 +28,14 @@ const condidate = new mongoose.Schema({
         type:String,
         required : false
     },
+    education:{
+        type:String,
+        required : false
+    },
+    aboutme:{
+        type:String,
+        required : false
+    },
     role: {
         type: String,
         default: 'user',

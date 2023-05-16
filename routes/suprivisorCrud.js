@@ -5,6 +5,8 @@ const {
     registration
 } = require('../validation/UserValidation');
 
+const soky = require('./notif');
+
 const bcrypt = require('bcryptjs');
 
 //add a comment to a specific candidate
@@ -19,6 +21,7 @@ router.get('/addcomment/:id', async (req, res) => {
 })
 
 
+  
 //search bar 
 router.get('/search', async (req, res) => {
     try {
@@ -39,21 +42,27 @@ router.get('/search', async (req, res) => {
 
 router.get('/getall', async (req, res) => {
     try {
-        const suprivisors = await suprivisor.find()
+      const supervisors = await suprivisor.find();
 
-
-        res.json(suprivisors)
+   
+            res.json(supervisors);
     } catch (err) {
-        res.send('Error ' + err)
-    }
-})
+        console.log("fucked UP");
 
+      res.send('Error ' + err);
+    }
+  });
+  
 // get by id 
 
 router.get('/getbyid/:id', async (req, res) => {
     try {
         const user = await suprivisor.findById(req.params.id)
         res.json(user)
+           
+      const notification = "yupp we did it "
+        soky.emit('notification', notification);
+console.log(soky)
     } catch (err) {
         res.send('Error ' + err)
     }
@@ -116,11 +125,57 @@ router.delete('/delete/:id', async (req, res) => {
         res.send('Error' + err)
     }
 })
+///delete  ONE candidate in the candidate list part ////
 
+router.delete('/delete/:supervisorId/candidate/:candidateIndex', async (req, res) => {
+    console.log("req.params.supervisorId",req.params.supervisorId)
+    console.log("req.params.candidateIndex",req.params.candidateIndex)
+
+    try {
+        const supervisor = await suprivisor.findById(req.params.supervisorId);
+        if (!supervisor) {
+            return res.status(404).send('Supervisor not found');
+        }
+    
+        supervisor.listofcandidate = supervisor.listofcandidate.filter(
+            (candidate, index) => index !== parseInt(req.params.candidateIndex)
+        );
+    
+        const updatedSupervisor = await supervisor.save();
+        res.json(updatedSupervisor);
+    } catch (err) {
+        res.status(500).send('Error: ' + err);
+    }
+});
+
+///delete  ONE internship in the internship list part ////
+
+router.delete('/delete/:supervisorId/internship/:internshipIndex', async (req, res) => {
+  try {
+        const supervisor = await suprivisor.findById(req.params.supervisorId);
+        if (!supervisor) {
+            return res.status(404).send('Supervisor not found');
+        }
+    
+        supervisor.listofinternship = supervisor.listofinternship.filter(
+            (candidate, index) => index !== parseInt(req.params.internshipIndex)
+        );
+    
+        const updatedSupervisor = await supervisor.save();
+        res.json(updatedSupervisor);
+    } catch (err) {
+        res.status(500).send('Error: ' + err);
+    }
+});
+
+  
 // update part ///
 
 router.put('/update/:id', async (req, res) => {
+    console.log(req.body)
+    console.log("the id :",req.params.id)
     try {
+      
         const user = await suprivisor.findByIdAndUpdate(req.params.id, req.body, {
             new: true
         });
