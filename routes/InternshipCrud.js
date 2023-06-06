@@ -44,6 +44,16 @@ router.get('/getall', async(req,res) => {
         res.send('Error ' + err)
     }
 })
+// get internship for a specefic supervisor
+
+router.get('/get_supervisor_internship/:id', async(req,res) => {
+    try{
+        const user = await Internship.find({suprivisorid:req.params.id})
+        res.json(user)
+    }catch(err){
+        res.send('Error ' + err)
+    }
+})
 // get by id 
 router.get('/getbyid/:id', async(req,res) => {
     try{
@@ -53,7 +63,7 @@ router.get('/getbyid/:id', async(req,res) => {
         res.send('Error ' + err)
     }
 })
-// add
+// add by admin
 router.post('/register', async(req,res) => {
 
     //validate the data 
@@ -77,6 +87,52 @@ const internship = new Internship({
     status:req.body.status,
     category:req.body.category,
     suprivisorid:req.body.suprivisorid,
+    created_at:new Date(),
+    updated_at:new Date(),
+
+   
+});
+
+try {
+    const savedInternship = await internship.save();
+
+     const user = await suprivisor.findById(req.body.suprivisorid);
+   
+     user.listofinternship.push([savedInternship.title, savedInternship._id]);
+     
+      const savedUser = await user.save();
+    res.send(savedUser);
+} catch (error) {
+    res.status(400).send(error);
+}
+
+//adding the internship to the list of interships of the supervisor
+
+});
+// add by supervisor
+router.post('/addInternshipBySupervisor/:id', async(req,res) => {
+    //validate the data 
+    req.body.suprivisorid = req.params.id
+   const {error} =  registration(req.body);
+   if (error) return res.status(400).send(error.details[0].message);
+
+
+   //check if user already exist 
+    const InternshipExist = await Internship.findOne({title:req.body.title});
+    if(InternshipExist) return res.status(400).send('Internship already exist !! ')
+
+const internship = new Internship({
+    title:req.body.title,
+    description:req.body.description,
+    requirements:req.body.requirements,
+    duration_weeks:req.body.duration_weeks,
+    start_date:req.body.start_date,
+    end_date:req.body.end_date,
+    max_candidates:req.body.max_candidates,
+    spots_available:req.body.spots_available,
+    status:req.body.status,
+    category:req.body.category,
+    suprivisorid:req.params.id,
     created_at:new Date(),
     updated_at:new Date(),
 

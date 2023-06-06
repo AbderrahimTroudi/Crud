@@ -5,7 +5,6 @@ const {
     registration
 } = require('../validation/UserValidation');
 
-const soky = require('./notif');
 
 const bcrypt = require('bcryptjs');
 
@@ -59,10 +58,6 @@ router.get('/getbyid/:id', async (req, res) => {
     try {
         const user = await suprivisor.findById(req.params.id)
         res.json(user)
-           
-      const notification = "yupp we did it "
-        soky.emit('notification', notification);
-console.log(soky)
     } catch (err) {
         res.send('Error ' + err)
     }

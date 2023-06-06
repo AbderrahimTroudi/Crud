@@ -82,8 +82,6 @@ router.get('/getbyid/:id', async (req, res) => {
     res.send('Error ' + err);
   }
 });
-
-
 // add
 
 router.post('/register', upload.single('file'), PDFcheck(), async (req, res) => {
@@ -170,16 +168,21 @@ console.log("Internshiptitle",Internshiptitle)
     // get user id from token
     const decodedToken = jwt.verify(token, process.env.TOKEN_SECRET);
     const userId = decodedToken._id;
-    const userName = decodedToken.nameFL
+    const userName = decodedToken.name
 
     // get internship id from request body
     const internshipId = req.params.internship_ID;
+    const count = await InternshipApplication.countDocuments({ candidate_ID: userId });
+    if(count == 3){
+      return res.status(400).send('you have reached your application number limit')
+    }
     const emailExist = await InternshipApplication.findOne({
       candidate_ID:userId,
       internship_ID: internshipId 
        });
     if (emailExist) return res.status(400).send('Email already exist !! ')
   
+
     // create new internship application
     const application = new InternshipApplication({
       internship_ID: internshipId,
